@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.g21.GameController" style="-fx-background-color: #006400;">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <Label text="BLACKJACK" textFill="WHITE">
+        <font>
+            <Font name="System Bold" size="36.0"/>
+        </font>
+    </Label>
+
+    <Label text="Try to beat the dealer by getting a hand value close to 21 without going over!"
+           textFill="WHITE" wrapText="true" textAlignment="CENTER">
+        <font>
+            <Font size="16.0"/>
+        </font>
+    </Label>
+
+    <Button fx:id="startButton" text="Start Game" onAction="#startGame"
+            prefWidth="200" prefHeight="50">
+        <font>
+            <Font size="18.0"/>
+        </font>
+    </Button>
+
+    <Button fx:id="helpButton" text="How to Play" onAction="#showHelp"
+            prefWidth="200" prefHeight="40">
+        <font>
+            <Font size="16.0"/>
+        </font>
+    </Button>
+
+    <Button fx:id="exitButton" text="Exit Game" onAction="#handleExit"
+            prefWidth="200" prefHeight="40">
+        <font>
+            <Font size="16.0"/>
+        </font>
+    </Button>
+</VBox>
