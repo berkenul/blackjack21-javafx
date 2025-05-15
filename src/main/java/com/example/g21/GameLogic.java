@@ -6,26 +6,29 @@ import java.util.List;
 
 /**
  * Class that manages game logic
- * Name: Berk Enul
- * Date: 15.05.2025
+ *
+ * @author Berk Enul
+ * @date 15.05.2025
  */
 public class GameLogic {
 
     private List<Card> deck = new ArrayList<>();
     private int index = 0;
 
-
+    /**
+     * Constructor - creates and shuffles deck
+     */
     public GameLogic() {
         createDeck();
         shuffle();
     }
 
-
+    /**
+     * Creates a standard deck of 52 cards
+     */
     private void createDeck() {
-
         String[] suits = { "C", "D", "H", "S" };
         String[] ranks = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
-
 
         for (String suit : suits) {
             for (String rank : ranks) {
@@ -39,21 +42,25 @@ public class GameLogic {
                     value = Integer.parseInt(rank);
                 }
 
-
                 deck.add(new Card(rank + suit, value));
             }
         }
     }
 
-
+    /**
+     * Shuffles the deck randomly
+     */
     public void shuffle() {
         Collections.shuffle(deck);
         index = 0;
     }
 
-
+    /**
+     * Draws a card from the deck
+     *
+     * @return the next card
+     */
     public Card drawCard() {
-
         if (index >= deck.size()) {
             shuffle();
         }

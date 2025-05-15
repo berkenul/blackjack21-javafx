@@ -8,66 +8,67 @@ import javafx.stage.Stage;
 
 /**
  * 21 game - Main class
- * Name: Berk Enul
- * Date: 15.05.2025
+ *
+ * @author Berk Enul
+ * @date 15.05.2025
  */
 public class Main extends Application {
 
     public static Stage mainStage;
 
-
+    /**
+     * Start method for JavaFX
+     *
+     * @param stage the primary stage
+     */
     @Override
     public void start(Stage stage) {
         try {
-
             mainStage = stage;
-
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("start-view.fxml"));
             Parent root = loader.load();
 
-
             Scene scene = new Scene(root, 800, 600);
             root.setStyle("-fx-background-color: #006400;");
-
 
             stage.setTitle("21 Game");
             stage.setScene(scene);
             stage.show();
 
         } catch (Exception e) {
-
             System.out.println("Error occurred: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
+    /**
+     * Switches to the game screen
+     */
     public static void switchToGameScene() {
         try {
-
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("game-view.fxml"));
             Parent root = loader.load();
-
 
             Scene scene = new Scene(root, 800, 600);
             root.setStyle("-fx-background-color: #006400;");
 
-
             mainStage.setScene(scene);
-
 
             GameController controller = loader.getController();
             controller.setupGame();
 
         } catch (Exception e) {
-
             System.out.println("Error switching to game screen: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
+    /**
+     * Main method
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }

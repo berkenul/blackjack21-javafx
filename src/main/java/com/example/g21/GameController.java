@@ -16,8 +16,9 @@ import java.util.List;
 
 /**
  * Game screen controller - manages game flow
- * Name Berk Enul
- * Date 15.05.2025
+ *
+ * @author Berk Enul
+ * @date 15.05.2025
  */
 public class GameController {
 
@@ -48,7 +49,6 @@ public class GameController {
     private List<Card> pendingCards;
     private List<ImageView> pendingViews;
 
-
     private Card dealerCard1;
     private Card dealerCard2;
 
@@ -56,7 +56,6 @@ public class GameController {
      * Initialize method - called by JavaFX
      */
     public void initialize() {
-
         player = new Player();
         dealer = new Player();
         logic = new GameLogic();
@@ -64,46 +63,43 @@ public class GameController {
         pendingViews = new ArrayList<>();
     }
 
-
+    /**
+     * Starts a new game
+     */
     @FXML
     private void startGame() {
         try {
             Main.switchToGameScene();
         } catch (Exception e) {
-
             System.out.println("Error starting game: " + e.getMessage());
         }
     }
 
-
+    /**
+     * Sets up the game board
+     */
     public void setupGame() {
         try {
-
             gameStarted = true;
             player.reset();
             dealer.reset();
-
 
             playerCardsBox.getChildren().clear();
             dealerCardsBox.getChildren().clear();
             pendingCards.clear();
             pendingViews.clear();
 
-
             playAgainButton.setVisible(false);
             standButton.setDisable(false);
             walkAwayButton.setDisable(false);
-
 
             if (messageLabel != null) {
                 messageLabel.setText("Click on a card to hit");
             }
 
-
             for (int i = 0; i < 2; i++) {
                 Card card = logic.drawCard();
                 player.addCard(card);
-
 
                 ImageView view = new ImageView(card.getImage());
                 view.setFitWidth(100);
@@ -111,21 +107,17 @@ public class GameController {
                 playerCardsBox.getChildren().add(view);
             }
 
-
             addHiddenPlayerCard();
-
 
             dealerCard1 = logic.drawCard();
             dealerCard2 = logic.drawCard();
             dealer.addCard(dealerCard1);
             dealer.addCard(dealerCard2);
 
-
             ImageView dealerCardView = new ImageView(dealerCard1.getImage());
             dealerCardView.setFitWidth(100);
             dealerCardView.setPreserveRatio(true);
             dealerCardsBox.getChildren().add(dealerCardView);
-
 
             dealerHiddenCardView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/g21/images/back.png")));
             dealerHiddenCardView.setFitWidth(100);
@@ -135,35 +127,31 @@ public class GameController {
             updateScores();
             updateScoreLabel();
 
-
             if (player.getTotal() == 21) {
                 winCount++;
                 endGame("Blackjack! You win!");
             }
 
         } catch (Exception e) {
-
             showAlert("Error", "Problem setting up game: " + e.getMessage());
             System.out.println("setupGame error: " + e);
         }
     }
 
-
+    /**
+     * Adds a hidden card for player to click
+     */
     private void addHiddenPlayerCard() {
         try {
-
             Card newCard = logic.drawCard();
             pendingCards.add(newCard);
-
 
             ImageView hiddenView = new ImageView(new Image(getClass().getResourceAsStream("/com/example/g21/images/back.png")));
             hiddenView.setFitWidth(100);
             hiddenView.setPreserveRatio(true);
 
-
             hiddenView.setOnMouseClicked(event -> revealNextPlayerCard(hiddenView));
             pendingViews.add(hiddenView);
-
 
             playerCardsBox.getChildren().add(hiddenView);
         } catch (Exception e) {
@@ -171,56 +159,52 @@ public class GameController {
         }
     }
 
-
+    /**
+     * Reveals a card when player clicks on it
+     *
+     * @param hiddenView the card image to replace
+     */
     private void revealNextPlayerCard(ImageView hiddenView) {
         try {
-
             if (!gameStarted || pendingCards.isEmpty()) return;
-
 
             Card card = pendingCards.remove(0);
             player.addCard(card);
-
 
             ImageView revealed = new ImageView(card.getImage());
             revealed.setFitWidth(100);
             revealed.setPreserveRatio(true);
 
-
             int index = playerCardsBox.getChildren().indexOf(hiddenView);
             playerCardsBox.getChildren().set(index, revealed);
             pendingViews.remove(hiddenView);
 
-
             updateScores();
-
 
             if (player.getTotal() > 21) {
                 loseCount++;
                 endGame("Bust! You went over 21. Dealer wins.");
                 return;
             }
-
             else if (player.getTotal() == 21) {
                 handleStand();
                 return;
             }
 
-
             addHiddenPlayerCard();
 
         } catch (Exception e) {
-
             showAlert("Error", "Problem revealing card.");
             System.out.println("Card reveal error: " + e);
         }
     }
 
+    /**
+     * Shows dealer's hidden card
+     */
     private void revealDealer() {
         try {
-
             dealerCardsBox.getChildren().remove(dealerHiddenCardView);
-
 
             if (dealerCard2 != null) {
                 ImageView revealed = new ImageView(dealerCard2.getImage());
@@ -233,19 +217,19 @@ public class GameController {
         }
     }
 
+    /**
+     * Handles stand button click
+     */
     @FXML
     private void handleStand() {
         try {
-
             if (!gameStarted) return;
 
             revealDealer();
 
-
             while (dealer.getTotal() < 17) {
                 Card card = logic.drawCard();
                 dealer.addCard(card);
-
 
                 ImageView view = new ImageView(card.getImage());
                 view.setFitWidth(100);
@@ -257,28 +241,27 @@ public class GameController {
 
             String result = determineWinner();
 
-
             if (result.contains("win")) winCount++;
             else if (result.contains("lose") || result.contains("Dealer wins")) loseCount++;
             else drawCount++;
 
-
             endGame(result);
 
         } catch (Exception e) {
-
             showAlert("Error", "Problem processing dealer cards.");
             System.out.println("Stand error: " + e);
         }
     }
 
-
+    /**
+     * Ends the current game
+     *
+     * @param message result message to show
+     */
     private void endGame(String message) {
-
         gameStarted = false;
         revealDealer();
         updateScores();
-
 
         showAlert("Game Over", message);
 
@@ -286,31 +269,31 @@ public class GameController {
             messageLabel.setText(message);
         }
 
-
         updateScoreLabel();
-
 
         standButton.setDisable(true);
         playAgainButton.setVisible(true);
     }
 
-
+    /**
+     * Starts a new game when Play Again button is clicked
+     */
     @FXML
     private void handlePlayAgain() {
         try {
             setupGame();  // Restart game
         } catch (Exception e) {
-
             showAlert("Error", "Problem starting new game.");
             System.out.println("Restart error: " + e);
         }
     }
 
-
+    /**
+     * Returns to main menu when Walk Away button is clicked
+     */
     @FXML
     private void handleWalkAway() {
         try {
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("start-view.fxml"));
             Parent root = loader.load();
 
@@ -324,7 +307,9 @@ public class GameController {
         }
     }
 
-
+    /**
+     * Exits the application
+     */
     @FXML
     private void handleExit() {
         try {
@@ -334,7 +319,9 @@ public class GameController {
         }
     }
 
-
+    /**
+     * Shows the game rules
+     */
     @FXML
     private void showHelp() {
         try {
@@ -360,7 +347,11 @@ public class GameController {
         }
     }
 
-
+    /**
+     * Checks who won the hand
+     *
+     * @return the result message
+     */
     private String determineWinner() {
         int playerTotal = player.getTotal();
         int dealerTotal = dealer.getTotal();
@@ -372,10 +363,11 @@ public class GameController {
         return "It's a tie!";
     }
 
-
+    /**
+     * Updates the score displays
+     */
     private void updateScores() {
         try {
-
             playerTotalLabel.setText("Player: " + player.getTotal());
 
             boolean dealerRevealed = !dealerCardsBox.getChildren().contains(dealerHiddenCardView);
@@ -389,6 +381,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Updates the win/loss display
+     */
     private void updateScoreLabel() {
         try {
             scoreLabel.setText("Wins: " + winCount + " | Losses: " + loseCount + " | Draws: " + drawCount);
@@ -397,6 +392,12 @@ public class GameController {
         }
     }
 
+    /**
+     * Shows a message popup
+     *
+     * @param title popup title
+     * @param content popup message
+     */
     private void showAlert(String title, String content) {
         try {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
